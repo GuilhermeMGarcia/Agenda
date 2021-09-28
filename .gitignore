@@ -2,3 +2,4 @@ __pycash__/
 *.pyc
 .idea/
 main.py
+agenda.json
