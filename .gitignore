@@ -3,3 +3,4 @@ __pycash__/
 .idea/
 main.py
 agenda.json
+database.json

@@ -39,6 +39,7 @@ def incluir_editar_contato(contato, telefone, email, endereco, verifica = '1'):
         'email': email,
         'endereco': endereco,
     }
+    salvar()
     print('')
 
 
@@ -46,6 +47,7 @@ def excluir_contato(contato):
     if contato in AGENDA:
         del AGENDA[contato]
         print(f'>>>>>>> Contato "{contato}" excluido com sucesso.\n')
+        salvar()
     else:
         print(f'>>>>>>> Contato "{contato}" n existe.')
 
@@ -84,12 +86,15 @@ def verificador_de_dados():
 
 
 def exportar_agenda(arquivo):
+    if arquivo == 'database':
+        imprimir = f'Salvando contatos.\nContatos salvos: {len(AGENDA)}'
+    else:
+        imprimir = f'Agenda exportada com sucesso\nContatos exportado: {len(AGENDA)}'
     arquivo_exportar = f'{arquivo}.json'
     try:
         with open(arquivo_exportar, 'w') as a_obj:
             json.dump(AGENDA, a_obj)
-            print('Agenda exportada com sucesso.')
-            print(f'Contatos exportado: {len(AGENDA)}')
+            print(imprimir)
     except Exception as e:
         print('Algum erro ocorreu.')
         print(f'{e}\n')
@@ -121,6 +126,34 @@ def importar_contatos(arquivo):
         print(f'{e}\n')
 
 
+def salvar():
+    exportar_agenda('database')
+
+
+def carregar():
+    arquivo_importar = 'database.json'
+    try:
+        with open(arquivo_importar) as a_obj:
+            contatos = json.load(a_obj)
+            if contatos:
+                for contato in contatos:
+                    informacao_contato = contatos[contato]
+                    AGENDA[contato] = {
+                        'telefone': informacao_contato["telefone"],
+                        'email': informacao_contato["email"],
+                        'endereco': informacao_contato["endereco"]
+                   }
+            else:
+                print('Database vazio.\n')
+        print(f'Database carregado com sucesso.\nContatos carregado: {len(AGENDA)}')
+    except FileNotFoundError:
+        print('Arquivo não encontrado\n')
+    except Exception as e:
+        print('Algum erro inesperado ocorreu.')
+        print(f'{e}\n')
+
+
+carregar()
 while True:
     imprimir_menu()
     opcao = input('Digite uma das opçôes: ')
